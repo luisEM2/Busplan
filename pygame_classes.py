@@ -231,10 +231,13 @@ class SwitchButton(PygameObject):
 
 
 class Options(PygameObject):
+    options = []
+    
     def __init__(self, pos, size):
         PygameObject.__init__(self, pos=pos, size=size, text="-",
                               background_color=self.BACKGROUND_COLOR, border_color=self.BORDER_COLOR,
                               border_size=self.BORDER_SIZE, border_distance=self.BORDER_DISTANCE)
+        Options.options.append(self)
 
     def check_collision(self, screen: pygame.Surface, mouse_x, mouse_y):
         if self.rect.collidepoint((mouse_x, mouse_y)):

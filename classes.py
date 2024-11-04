@@ -85,23 +85,47 @@ class StationForBus:
     default_number = 1000000000
     list_stations = []
 
-    def __init__(self, number, time, connections, pos, change, name):
-        self.time = time
-        self.number = number
-        self.name = name
-        self.x = pos[0]
-        self.y = pos[1]
-        self.change = change
-        if type(connections) == float:
-            self.connections = [int(connections)]
+    def __init__(self, number, time, connections, pos, change, name, false_init=False):
+        if false_init:
+            self.false_init(number)
         else:
-            self.connections = [int(i) for i in connections.split(" ")]
-        self.distance_to_start = self.default_number
-        self.route = []
-        StationForBus.list_stations.append(self)
+            self.time = time
+            self.number = number
+            self.name = name
+            self.x = pos[0]
+            self.y = pos[1]
+            self.change = change
+            if type(connections) == float:
+                self.connections = [int(connections)]
+            else:
+                self.connections = [int(i) for i in connections.split(" ")]
+            self.distance_to_start = self.default_number
+            self.route = []
+            StationForBus.list_stations.append(self)
+
+    def false_init(self, station):
+        self.time = station.time
+        self.number = station.number
+        self.name = station.name
+        self.x = station.x
+        self.y = station.y
+        self.change = station.change
+        self.distance_to_start = station.distance_to_start
+        self.route = station.route.copy()
+        self.connections = station.connections
+        return self
+
+    @staticmethod
+    def get_station_by_name_and_lane(name: str, number: int):
+        l = []
+        for station in StationForBus.list_stations:
+            if station.name == name:
+                if int(station.number/100) == number:
+                    l.append(station)
+        return l
 
     def __repr__(self):
-        return f"{self.name}, num: {self.number}, dis:{self.distance_to_start}, time:{self.time}"
+        return f"{self.name}; num: {self.number}; dis:{self.distance_to_start}; time:{self.time}"
 
 
 class Bus(Hoverable):
@@ -144,6 +168,7 @@ class Bus(Hoverable):
             first_stations.append(first_station)
         for first_station in first_stations:
             first_station.distance_to_start = first_station.time - departure_time
+            first_station.route.append(first_station)
             next_station = self.get_next(first_station, first_station.time)
             if next_station:
                 list_calculating.append(next_station)
@@ -172,14 +197,14 @@ class Bus(Hoverable):
                 if next_station.distance_to_start == StationForBus.default_number:
                     next_station.distance_to_start = first_station.distance_to_start + next_station.time - first_station.time
                     next_station.route = station.route.copy()
-                    next_station.route.append(self.lane)
+                    next_station.route.append(next_station)
                 else:
                     if next_station.distance_to_start < first_station.distance_to_start + next_station.time - first_station.time:
                         return False
                     else:
                         next_station.distance_to_start = first_station.distance_to_start + next_station.time - first_station.time
                         next_station.route = station.route.copy()
-                        next_station.route.append(self.lane)
+                        next_station.route.append(next_station)
                 return next_station
             else:
                 return False
