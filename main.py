@@ -268,7 +268,7 @@ def calculate_route_only(start: str, end: str, start_time: int, new: bool):
     dict_names = dict_names_new if new else dict_names_old
     # setup
     print(start, end, start_time)
-    debug = True
+    debug = False
     if new:
         for station in StationForBus.list_stations_new:
             station.route = []
@@ -385,7 +385,6 @@ def calculate_route_only(start: str, end: str, start_time: int, new: bool):
             while not is_best:
                 best, is_best = get_least_change(best, list_routes)
 
-            print("find route only:", best, best.route)
             return best
 
 

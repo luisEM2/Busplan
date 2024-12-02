@@ -9,9 +9,9 @@ screen = pygame.display.set_mode((1920, 1080))
 clock = pygame.time.Clock()
 running = True
 start = time.time()
-bg = pygame.image.load("Background_Map.png")
+bg = pygame.image.load("bilder/Background_Map.png")
 bg = pygame.transform.scale(bg, (screen.get_width(), screen.get_height()))
-positions = [[0.0265625, 0.65462963]]
+positions = [[0.55, 0.09537037]]
 
 
 while running:
